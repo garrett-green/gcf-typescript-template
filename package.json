@@ -1,26 +1,23 @@
 {
-  "name": "gcf-typescript-template",
-  "version": "1.0.1",
-  "description": "A template for Google Cloud Functions project that uses Typescript.",
-  "repository": "golergka/gcf-typescript-template",
+  "name": "phishtory-endpoint",
+  "version": "1.0.0",
+  "description": "A GCF for Phishtory",
   "main": "dist/index.js",
   "scripts": {
-    "start": "npx tsc-watch --onSuccess 'npx @google-cloud/functions-framework --target=helloWorld'",
-    "deploy": "npx tsc && gcloud functions deploy helloWorld --runtime nodejs10 --trigger-http"
+    "start": "npx tsc-watch --onSuccess 'npx @google-cloud/functions-framework --port=8081 --target=tweetTodayInPhishtory'",
+    "deploy": "npx tsc && gcloud functions deploy getPhishtory --runtime nodejs10 --trigger-http"
   },
-  "keywords": [
-    "Typescript",
-    "Template",
-    "Google Cloud Functions",
-    "GCF",
-    "functions",
-    "serverless"
-  ],
-  "author": "Max Yankov aka golergka",
-  "license": "MIT",
+  "author": "@garrettgreen",
   "devDependencies": {
     "@google-cloud/functions-framework": "^1.1.2",
+    "@types/express": "^4.17.6",
     "tsc-watch": "^2.2.1",
     "typescript": "^3.5.3"
+  },
+  "dependencies": {
+    "@types/twit": "^2.2.24",
+    "axios": "^0.19.2",
+    "dotenv": "^8.2.0",
+    "twit": "^2.2.11"
   }
 }
