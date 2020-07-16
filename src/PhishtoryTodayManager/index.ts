@@ -32,12 +32,12 @@ http://www.phishtracks.com/shows/${showdate}
   }
 
   getLinkTweetCopy(links: PhishNet.Link[]) {
-    const linkIdx = this.getRandomNumber(0, links.length);
+    const linkIdx = this.getRandomNumber(0, links.length - 1);
     return links[linkIdx];
   }
 
   getReplyTweetCopy(links: PhishNet.Link[]) {
-    const link = links[this.getRandomNumber(0, links.length)];
+    const link = links[this.getRandomNumber(0, links.length - 1)];
 
     return `👀🎧📖 Check out this show's ${link.description}: 
 ${link.link}
@@ -70,7 +70,7 @@ Check it out: ${url}
 
     const tweets = [tweet1, tweet2, tweet3];
 
-    return tweets[this.getRandomNumber(0, tweets.length)];
+    return tweets[this.getRandomNumber(0, tweets.length - 1)];
   }
 
   private getRandomNumber(min: number, max: number) {
