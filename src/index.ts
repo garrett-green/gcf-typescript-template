@@ -2,6 +2,7 @@ import { config } from 'dotenv';
 import { Request, Response } from 'express';
 import PhishDataManager from './PhishDataManager';
 import PhishtoryTodayManager from './PhishtoryTodayManager';
+import { default as showsOnSpotify } from './PhishDataManager/albumsOnSpotify';
 
 config();
 
@@ -22,7 +23,9 @@ const phishtory = new PhishtoryTodayManager();
 export const tweetTodayInPhishtory = async (req: Request, res: Response) => {
   const tiph = await phishtory.getShow();
 
-  const tweetCopy = phishtory.getShowTweetCopy(tiph);
+  const tweetCopy = !showsOnSpotify[tiph.showdate]
+    ? phishtory.getShowTweetCopy(tiph)
+    : phishtory.getSpotifyTweetCopy(tiph, showsOnSpotify[tiph.showdate]);
 
   const tweet: any = await phishtory.post(tweetCopy).catch((err) => {
     console.log('ERROR: tweetTodayInPhishtory -> tweet');
