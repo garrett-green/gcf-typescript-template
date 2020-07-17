@@ -168,7 +168,7 @@ export namespace PhishNet {
     link: string;
     location: string;
     setlistnotes?: string;
-    showdate: Date | string;
+    showdate: string;
     tour_when: string;
     tourid: number;
     tourname: string;
@@ -190,7 +190,7 @@ export namespace PhishNet {
     setlistdata: string;
     setlistnotes: string;
     short_date: string;
-    showdate: Date | string;
+    showdate: string;
     url: string;
     venue: string;
     venueid: number;
