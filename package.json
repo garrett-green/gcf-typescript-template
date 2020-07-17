@@ -5,7 +5,8 @@
   "main": "dist/index.js",
   "scripts": {
     "start": "npx tsc-watch --onSuccess 'npx @google-cloud/functions-framework --port=8081 --target=tweetTodayInPhishtory'",
-    "deploy": "npx tsc && gcloud functions deploy getPhishtory --runtime nodejs10 --trigger-http"
+    "deploy-endpoint": "npx tsc && gcloud functions deploy getPhishtory --runtime nodejs10 --trigger-http",
+    "deploy-tw": "npx tsc && gcloud functions deploy tweetTodayInPhishtory --runtime nodejs10 --trigger-http"
   },
   "author": "@garrettgreen",
   "devDependencies": {
