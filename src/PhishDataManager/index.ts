@@ -60,13 +60,14 @@ export default class PhishDataManager {
   }
 
   async getShowLinks(showId: number) {
-    const { data } = await axios
-      .get<PhishNet.Response<PhishNet.Link>>(
-        `https://api.phish.net/v3/shows/links?apikey=${process.env.PHISH_NET}&showid=${showId}`
-      )
-      .catch(() => null);
-    console.log('LINKS API Res:', JSON.stringify(data));
-    return data.count > 0 ? data.data : null;
+    const {
+      data: { response },
+    } = await axios.get<PhishNet.API<PhishNet.Link>>(
+      `https://api.phish.net/v3/shows/links?apikey=${process.env.PHISH_NET}&showid=${showId}`
+    );
+
+    console.log('LINKS API Res:', JSON.stringify(response));
+    return response.count > 0 ? response.data : null;
   }
 
   getJamNotes(setlistdata: string) {
