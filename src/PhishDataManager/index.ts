@@ -50,6 +50,8 @@ export default class PhishDataManager {
         response: { data },
       },
     } = await axios.post<PhishNet.API<PhishNet.Show>>(req).catch((error) => {
+      console.dir(error);
+      console.log(JSON.stringify(error));
       const errorMessage = `Failed to fetch shows from phish.net. ERROR: ${error}.`;
       throw new Error(errorMessage);
     });
@@ -58,10 +60,14 @@ export default class PhishDataManager {
   }
 
   async getShowLinks(showId: number) {
-    const { data } = await axios.get<PhishNet.Response<PhishNet.Link>>(
+    const {
+      data: { response },
+    } = await axios.get<PhishNet.API<PhishNet.Link>>(
       `https://api.phish.net/v3/shows/links?apikey=${process.env.PHISH_NET}&showid=${showId}`
     );
-    return data.count > 0 ? data.data : null;
+
+    console.log('LINKS API Res:', JSON.stringify(response));
+    return response.count > 0 ? response.data : null;
   }
 
   getJamNotes(setlistdata: string) {

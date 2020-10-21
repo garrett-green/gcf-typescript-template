@@ -36,10 +36,13 @@ export const tweetTodayInPhishtory = async (req: Request, res: Response) => {
   console.log(`POSTED: tweetTodayInPhishtory -> tweet`, JSON.stringify(tweet));
 
   const links = await phishData.getShowLinks(tiph.showid);
+  console.log(`tweetTodayInPhishtory -> links`, links);
 
   const replyTweet = !links
     ? phishtory.getDefaultReplyTweetCopy(tiph)
     : phishtory.getReplyTweetCopy(links);
+
+  console.log(`tweetTodayInPhishtory -> replyTweet`, replyTweet);
 
   const reply: any = await phishtory
     .postReply(tweet.data.id_str, replyTweet)

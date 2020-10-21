@@ -36,7 +36,7 @@ http://www.phishtracks.com/shows/${showdate}
   getReplyTweetCopy(links: PhishNet.Link[]) {
     const link = links[this.getRandomNumber(0, links.length - 1)];
 
-    return `👀🎧📖🎞 Check out this show's ${link.description}: 
+    return `👀🎧📖🎞 Check out this show's ${link.type}: ${link.description} 
 ${link.link} 
 `;
   }
