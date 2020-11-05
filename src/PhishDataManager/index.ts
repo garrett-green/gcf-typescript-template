@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios from 'axios';
 
 export default class PhishDataManager {
   date: Date;
@@ -68,15 +68,15 @@ export default class PhishDataManager {
     return setlistdata
       .split('<a title="')
       .reduce((jamNotes: string[], currentSong: string) => {
-        if (!currentSong.startsWith("<")) {
+        if (!currentSong.startsWith('<')) {
           const cleanUp = /&quot;/gi;
           const jamNote = currentSong
             .slice(0, currentSong.indexOf('" href='))
-            .replace(cleanUp, "");
+            .replace(cleanUp, '');
           const songTitle = currentSong.slice(
             currentSong.indexOf("class='setlist-song'>") +
               "class='setlist-song'>".length,
-            currentSong.indexOf("</a>")
+            currentSong.indexOf('</a>')
           );
           jamNotes.push(`${songTitle.toUpperCase()}: ${jamNote}`);
         }
@@ -135,8 +135,8 @@ export default class PhishDataManager {
     return setList
       .split(`class='setlist-song'>`)
       .reduce((songs: string[], currentSong) => {
-        if (!currentSong.startsWith("<")) {
-          const title = currentSong.slice(0, currentSong.indexOf("</a>"));
+        if (!currentSong.startsWith('<')) {
+          const title = currentSong.slice(0, currentSong.indexOf('</a>'));
           songs.push(title);
         }
         return songs;

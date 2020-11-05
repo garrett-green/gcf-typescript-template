@@ -1,0 +1,6 @@
+{
+  "singleQuote": true,
+  "parser": "typescript",
+  "useTabs": false,
+  "tabWidth": 2
+}
