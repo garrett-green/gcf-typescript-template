@@ -1,9 +1,9 @@
 import axios from 'axios';
 
 export default class PhishDataManager {
-  today: Date;
+  date: Date;
   constructor() {
-    this.today = new Date();
+    this.date = new Date();
   }
 
   async getPhishtory() {
@@ -40,8 +40,8 @@ export default class PhishDataManager {
   }
 
   async getShowsByDate() {
-    const month = this.today.getMonth() + 1;
-    const day = this.today.getDate();
+    const month = this.date.getMonth() + 1;
+    const day = this.date.getDate();
 
     const req = `https://api.phish.net/v3/shows/query?apikey=${process.env.PHISH_NET}&month=${month}&day=${day}&order=ASC`;
 
@@ -115,6 +115,20 @@ export default class PhishDataManager {
       setOne: this.getSongs(set1songs),
       setTwo: this.getSongs(set2songs),
     };
+  }
+
+  setDate({
+    month = (this.date.getMonth() + 1).toString(),
+    day = this.date.getDate().toString(),
+  }: {
+    month: string;
+    day: string;
+  }) {
+    this.date = new Date(
+      this.date.getFullYear(),
+      Number(month) - 1,
+      Number(day)
+    );
   }
 
   private getSongs(setList: string) {

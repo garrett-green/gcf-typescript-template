@@ -9,6 +9,10 @@ config();
 const phishData = new PhishDataManager();
 
 export const getPhishtory = async (req: Request, res: Response) => {
+  if (!(JSON.stringify(req.body) === '{}')) {
+    phishData.setDate({ ...req.body });
+  }
+
   const phishtory = await phishData.getPhishtory();
 
   const sortedPhishtory = phishtory.sort(
