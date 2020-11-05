@@ -1,14 +1,18 @@
-import { config } from 'dotenv';
-import { Request, Response } from 'express';
-import PhishDataManager from './PhishDataManager';
-import PhishtoryTodayManager from './PhishtoryTodayManager';
-import { default as showsOnSpotify } from './PhishDataManager/albumsOnSpotify';
+import { config } from "dotenv";
+import { Request, Response } from "express";
+import PhishDataManager from "./PhishDataManager";
+import PhishtoryTodayManager from "./PhishtoryTodayManager";
+import { default as showsOnSpotify } from "./PhishDataManager/albumsOnSpotify";
 
 config();
 
 const phishData = new PhishDataManager();
 
 export const getPhishtory = async (req: Request, res: Response) => {
+  if (!(JSON.stringify(req.body) === "{}")) {
+    phishData.setDate({ ...req.body });
+  }
+
   const phishtory = await phishData.getPhishtory();
 
   const sortedPhishtory = phishtory.sort(
@@ -28,7 +32,7 @@ export const tweetTodayInPhishtory = async (req: Request, res: Response) => {
     : phishtory.getSpotifyTweetCopy(tiph, showsOnSpotify[tiph.showdate]);
 
   const tweet: any = await phishtory.post(tweetCopy).catch((err) => {
-    console.log('ERROR: tweetTodayInPhishtory -> tweet');
+    console.log("ERROR: tweetTodayInPhishtory -> tweet");
     console.dir(err);
     res.status(401).send(new Error(JSON.stringify(err)));
   });
@@ -44,7 +48,7 @@ export const tweetTodayInPhishtory = async (req: Request, res: Response) => {
   const reply: any = await phishtory
     .postReply(tweet.data.id_str, replyTweet)
     .catch((err) => {
-      console.log('ERROR: tweetTodayInPhishtory -> reply');
+      console.log("ERROR: tweetTodayInPhishtory -> reply");
       console.dir(err);
       res.status(402).send(new Error(JSON.stringify(err)));
     });

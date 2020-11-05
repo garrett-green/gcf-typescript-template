@@ -1,9 +1,9 @@
-import axios from 'axios';
+import axios from "axios";
 
 export default class PhishDataManager {
-  today: Date;
+  date: Date;
   constructor() {
-    this.today = new Date();
+    this.date = new Date();
   }
 
   async getPhishtory() {
@@ -40,8 +40,8 @@ export default class PhishDataManager {
   }
 
   async getShowsByDate() {
-    const month = this.today.getMonth() + 1;
-    const day = this.today.getDate();
+    const month = this.date.getMonth() + 1;
+    const day = this.date.getDate();
 
     const req = `https://api.phish.net/v3/shows/query?apikey=${process.env.PHISH_NET}&month=${month}&day=${day}&order=ASC`;
 
@@ -68,15 +68,15 @@ export default class PhishDataManager {
     return setlistdata
       .split('<a title="')
       .reduce((jamNotes: string[], currentSong: string) => {
-        if (!currentSong.startsWith('<')) {
+        if (!currentSong.startsWith("<")) {
           const cleanUp = /&quot;/gi;
           const jamNote = currentSong
             .slice(0, currentSong.indexOf('" href='))
-            .replace(cleanUp, '');
+            .replace(cleanUp, "");
           const songTitle = currentSong.slice(
             currentSong.indexOf("class='setlist-song'>") +
               "class='setlist-song'>".length,
-            currentSong.indexOf('</a>')
+            currentSong.indexOf("</a>")
           );
           jamNotes.push(`${songTitle.toUpperCase()}: ${jamNote}`);
         }
@@ -117,12 +117,26 @@ export default class PhishDataManager {
     };
   }
 
+  setDate({
+    month = (this.date.getMonth() + 1).toString(),
+    day = this.date.getDate().toString(),
+  }: {
+    month: string;
+    day: string;
+  }) {
+    this.date = new Date(
+      this.date.getFullYear(),
+      Number(month) - 1,
+      Number(day)
+    );
+  }
+
   private getSongs(setList: string) {
     return setList
       .split(`class='setlist-song'>`)
       .reduce((songs: string[], currentSong) => {
-        if (!currentSong.startsWith('<')) {
-          const title = currentSong.slice(0, currentSong.indexOf('</a>'));
+        if (!currentSong.startsWith("<")) {
+          const title = currentSong.slice(0, currentSong.indexOf("</a>"));
           songs.push(title);
         }
         return songs;

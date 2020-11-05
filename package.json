@@ -1,10 +1,10 @@
 {
   "name": "phishtory-endpoint",
   "version": "1.0.0",
-  "description": "A GCF for Phishtory",
+  "description": "GCFs for Phishtory",
   "main": "dist/index.js",
   "scripts": {
-    "start": "npx tsc-watch --onSuccess 'npx @google-cloud/functions-framework --port=8081 --target=tweetTodayInPhishtory'",
+    "start": "npx tsc-watch --onSuccess 'npx @google-cloud/functions-framework --port=8081 --target=getPhishtory'",
     "deploy-endpoint": "npx tsc && gcloud functions deploy getPhishtory --runtime nodejs10 --trigger-http",
     "deploy-tw": "npx tsc && gcloud functions deploy tweetTodayInPhishtory --runtime nodejs10 --trigger-http"
   },
