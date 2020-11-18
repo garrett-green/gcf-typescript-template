@@ -130,8 +130,22 @@ export default class PhishDataManager {
       `<span class='set-label'>Encore</span>:`
     );
 
-    const setOne = setlistdata.substring(setOneIndex, setTwoIndex);
-    const setTwo = setlistdata.substring(setTwoIndex, setThreeIndex);
+    const setOne =
+      setTwoIndex < 0
+        ? setlistdata.substring(setOneIndex)
+        : setlistdata.substring(setOneIndex, setTwoIndex);
+
+    const setTwo =
+      setTwoIndex > 0
+        ? setlistdata.substring(
+            setTwoIndex,
+            setThreeIndex > 0
+              ? setThreeIndex
+              : encoreIndex > 0
+              ? encoreIndex
+              : undefined
+          )
+        : null;
 
     const setThree =
       setThreeIndex > 0
