@@ -39,11 +39,12 @@ export const tweetTodayInPhishtory = async (req: Request, res: Response) => {
 
   console.log(`POSTED: tweetTodayInPhishtory -> tweet`, JSON.stringify(tweet));
 
-  const links = await phishData.getShowLinks(tiph.showid);
+  const showLinks = await phishData.getShowLinks(tiph.showid);
 
-  const replyTweet = !links
-    ? phishtory.getDefaultReplyTweetCopy(tiph)
-    : phishtory.getReplyTweetCopy(links);
+  const replyTweet =
+    !showLinks || !showLinks.links || showLinks.links.length < 1
+      ? phishtory.getDefaultReplyTweetCopy(tiph)
+      : phishtory.getReplyTweetCopy(showLinks.links);
 
   const reply: any = await phishtory
     .postReply(tweet.data.id_str, replyTweet)

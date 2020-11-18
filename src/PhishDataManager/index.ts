@@ -9,17 +9,32 @@ export default class PhishDataManager {
   async getPhishtory() {
     const todaysShows = await this.getShowsByDate();
 
-    const setlistData = await Promise.all(
+    const setlists = await Promise.all(
       todaysShows.map((show) => this.getSetlistData(show.showid))
     );
 
-    return setlistData.reduce(
+    const setlistLinksData = await Promise.all(
+      setlists
+        .filter((setlist) => !!setlist && !!setlist.showid)
+        .map((setlist) => this.getShowLinks(setlist.showid))
+    );
+
+    return setlists.reduce(
       (
         setlists: PhishNet.FormattedSetlist[],
         currentSetlist: PhishNet.Setlist
       ) => {
         if (!!currentSetlist) {
-          setlists.push(this.getSetlist(currentSetlist));
+          const showLinks = setlistLinksData.find(
+            (setlistLinks) =>
+              setlistLinks &&
+              currentSetlist &&
+              setlistLinks.showId === currentSetlist.showid
+          );
+          setlists.push({
+            ...this.getSetlist(currentSetlist),
+            links: showLinks && showLinks.links ? showLinks.links : [],
+          });
         }
         return setlists;
       },
@@ -57,11 +72,17 @@ export default class PhishDataManager {
     return data.filter((show) => show.artistid === 1);
   }
 
-  async getShowLinks(showId: number) {
-    const { data } = await axios.get<PhishNet.Response<PhishNet.Link>>(
+  async getShowLinks(
+    showId: number
+  ): Promise<{ showId: number; links: Partial<PhishNet.Link[]> } | null> {
+    const {
+      data: {
+        response: { count, data },
+      },
+    } = await axios.get<PhishNet.API<Omit<PhishNet.Link, 'showId'>>>(
       `https://api.phish.net/v3/shows/links?apikey=${process.env.PHISH_NET}&showid=${showId}`
     );
-    return data.count > 0 ? data.data : null;
+    return count > 0 ? { showId, links: data } : null;
   }
 
   getJamNotes(setlistdata: string) {
@@ -88,7 +109,9 @@ export default class PhishDataManager {
     location,
     rating,
     setlistdata,
+    setlistnotes: setlistNotes,
     showdate: date,
+    showid: showId,
     url: phishNetURL,
   }: PhishNet.Setlist): PhishNet.FormattedSetlist {
     const setOneIndex = setlistdata.indexOf(
@@ -97,23 +120,56 @@ export default class PhishDataManager {
     const setTwoIndex = setlistdata.indexOf(
       `<span class='set-label'>Set 2</span>:`
     );
+    const setThreeIndex = setlistdata.indexOf(
+      `<span class='set-label'>Set 3</span>:`
+    );
+    const setFourIndex = setlistdata.indexOf(
+      `<span class='set-label'>Set 4</span>:`
+    );
     const encoreIndex = setlistdata.indexOf(
       `<span class='set-label'>Encore</span>:`
     );
-    const set1songs = setlistdata.slice(setOneIndex, setTwoIndex);
-    const set2songs = setlistdata.slice(setTwoIndex, encoreIndex);
-    const encoreSongs = setlistdata.slice(encoreIndex);
+
+    const setOne = setlistdata.substring(setOneIndex, setTwoIndex);
+    const setTwo = setlistdata.substring(setTwoIndex, setThreeIndex);
+
+    const setThree =
+      setThreeIndex > 0
+        ? setlistdata.substring(
+            setThreeIndex,
+            setFourIndex < encoreIndex ? setFourIndex : encoreIndex
+          )
+        : null;
+
+    const setFour =
+      setFourIndex > 0
+        ? setFourIndex < encoreIndex
+          ? setlistdata.substring(setFourIndex, encoreIndex)
+          : setlistdata.substring(setFourIndex)
+        : null;
+
+    const encore =
+      encoreIndex > 0
+        ? encoreIndex < setFourIndex
+          ? setlistdata.substring(encoreIndex, setFourIndex)
+          : setlistdata.substring(encoreIndex)
+        : null;
+
     const jamNotes = this.getJamNotes(setlistdata);
 
     return {
       date,
-      encore: this.getSongs(encoreSongs),
-      jamNotes,
       location,
       phishNetURL,
       rating: Number(rating),
-      setOne: this.getSongs(set1songs),
-      setTwo: this.getSongs(set2songs),
+      showId,
+      setlistNotes,
+      ...(jamNotes && jamNotes.length > 0 && { jamNotes }),
+      setOne: this.getSongs(setOne),
+      ...(setTwo && { setTwo: this.getSongs(setTwo) }),
+      ...(setThree && { setThree: this.getSongs(setThree) }),
+      ...(setFour && { setFour: this.getSongs(setFour) }),
+      ...(encore && { encore: this.getSongs(encore) }),
     };
   }
 
@@ -157,14 +213,19 @@ export namespace PhishNet {
   }
 
   export interface FormattedSetlist {
+    showId: number;
     date: string | Date;
-    encore: string[];
-    jamNotes: string[];
     location: string;
     phishNetURL: string;
     rating: number;
+    setlistNotes?: string;
+    jamNotes?: string[];
     setOne: string[];
-    setTwo: string[];
+    setTwo?: string[];
+    setThree?: string[];
+    setFour?: string[];
+    encore?: string[];
+    links?: Partial<Link[]> | null;
   }
 
   export interface Link {
