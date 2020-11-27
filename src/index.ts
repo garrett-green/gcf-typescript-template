@@ -1,19 +1,17 @@
 import { config } from 'dotenv';
+import * as cors from 'cors';
 import { Request, Response } from 'express';
 import PhishDataManager from './PhishDataManager';
 import PhishtoryTodayManager from './PhishtoryTodayManager';
 import { default as showsOnSpotify } from './PhishDataManager/albumsOnSpotify';
 
 config();
+cors();
 
 const phishData = new PhishDataManager();
 
 export const getPhishtory = async (req: Request, res: Response) => {
-  res.set('Access-Control-Allow-Origin', '*');
-  res.set('Access-Control-Allow-Methods', 'GET, PUT, POST, OPTIONS');
-  res.set('Access-Control-Allow-Headers', 'Authorization');
-  res.set('Access-Control-Max-Age', '3600');
-
+  cors();
   if (!(JSON.stringify(req.body) === '{}')) {
     phishData.setDate({ ...req.body });
   }
