@@ -1,27 +1,14 @@
 import { config } from 'dotenv';
-import * as cors from 'cors';
 import { Request, Response } from 'express';
 import PhishDataManager from './PhishDataManager';
 import PhishtoryTodayManager from './PhishtoryTodayManager';
 import { default as showsOnSpotify } from './PhishDataManager/albumsOnSpotify';
 
 config();
-cors({
-  origin: '*',
-  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-  preflightContinue: true,
-  optionsSuccessStatus: 204,
-});
 
 const phishData = new PhishDataManager();
 
 export const getPhishtory = async (req: Request, res: Response) => {
-  cors({
-    origin: '*',
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-    preflightContinue: true,
-    optionsSuccessStatus: 204,
-  });
   if (!(JSON.stringify(req.body) === '{}')) {
     phishData.setDate({ ...req.body });
   }
