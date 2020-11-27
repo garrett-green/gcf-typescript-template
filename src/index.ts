@@ -6,12 +6,22 @@ import PhishtoryTodayManager from './PhishtoryTodayManager';
 import { default as showsOnSpotify } from './PhishDataManager/albumsOnSpotify';
 
 config();
-cors();
+cors({
+  origin: '*',
+  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+  preflightContinue: true,
+  optionsSuccessStatus: 204,
+});
 
 const phishData = new PhishDataManager();
 
 export const getPhishtory = async (req: Request, res: Response) => {
-  cors();
+  cors({
+    origin: '*',
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    preflightContinue: true,
+    optionsSuccessStatus: 204,
+  });
   if (!(JSON.stringify(req.body) === '{}')) {
     phishData.setDate({ ...req.body });
   }
