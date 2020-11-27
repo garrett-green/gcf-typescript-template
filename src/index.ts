@@ -9,9 +9,8 @@ config();
 const phishData = new PhishDataManager();
 
 export const getPhishtory = async (req: Request, res: Response) => {
-  res.set('Access-Control-Allow-Origin', 'https://phishtory-site.vercel.app/');
   res.set('Access-Control-Allow-Origin', '*');
-  res.set('Access-Control-Allow-Credentials', 'true');
+  res.set('Access-Control-Allow-Methods', 'GET, POST');
 
   if (!(JSON.stringify(req.body) === '{}')) {
     phishData.setDate({ ...req.body });
@@ -23,7 +22,7 @@ export const getPhishtory = async (req: Request, res: Response) => {
     ({ rating: ratingA }, { rating: ratingB }) => ratingB - ratingA
   );
 
-  res.send(sortedPhishtory);
+  res.status(200).send(sortedPhishtory);
 };
 
 const phishtory = new PhishtoryTodayManager();
