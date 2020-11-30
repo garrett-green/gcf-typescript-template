@@ -9,6 +9,10 @@ config();
 const phishData = new PhishDataManager();
 
 export const getPhishtory = async (req: Request, res: Response) => {
+  res.set('Access-Control-Allow-Origin', '*');
+  res.set('Access-Control-Allow-Methods', 'GET, POST');
+  res.set('Access-Control-Allow-Headers', '*');
+
   if (!(JSON.stringify(req.body) === '{}')) {
     phishData.setDate({ ...req.body });
   }
